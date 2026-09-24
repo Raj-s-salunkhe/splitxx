@@ -1,0 +1,12 @@
+{
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://huiehgawfgtmjyttpfmt.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_moQRIpC0hm_PaSDlWfIMcA_JHgHxkDN",
+    "VITE_SUPABASE_URL": "https://huiehgawfgtmjyttpfmt.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "sb_publishable_moQRIpC0hm_PaSDlWfIMcA_JHgHxkDN"
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
