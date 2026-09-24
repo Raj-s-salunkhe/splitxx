@@ -17,6 +17,15 @@ export interface Friend {
   created_at: string;
 }
 
+export interface FriendRequest {
+  id: string;
+  requester_id: string;
+  addressee_id: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Group {
   id: string;
   user_id: string;

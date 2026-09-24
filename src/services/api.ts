@@ -2,6 +2,7 @@ import supabase from '../lib/supabase';
 import type {
   User,
   Friend,
+  FriendRequest,
   Group,
   Expense,
   BalancesResponse,
@@ -103,6 +104,24 @@ export const friendsApi = {
   delete: (id: string) => authedFetch<{ ok: boolean }>('/api/friends', {
     method: 'DELETE',
     body: JSON.stringify({ id }),
+  }),
+};
+
+// Friend Requests API
+export const friendRequestsApi = {
+  get: (direction: 'incoming' | 'outgoing') =>
+    authedFetch<FriendRequest[]>(`/api/friend-requests?direction=${direction}`),
+  create: (data: { addressee_id: string }) => authedFetch<FriendRequest>('/api/friend-requests', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+  update: (id: string, status: 'accepted' | 'rejected') =>
+    authedFetch<FriendRequest>(`/api/friend-requests/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    }),
+  cancel: (id: string) => authedFetch<{ ok: boolean }>(`/api/friend-requests/${id}`, {
+    method: 'DELETE',
   }),
 };
 
