@@ -3,6 +3,7 @@ import { Plus, Search, X, Mail, TrendingUp, TrendingDown, UserPlus, AlertCircle,
 import { Card, Avatar, ConfirmDialog, Button } from '../../components/ui';
 import { SkeletonFriends } from '../../components/ui/Skeleton';
 import { AddFriendModal } from '../../components/modals';
+import { FriendRequestsSection } from '../../components/FriendRequestsSection';
 import { friendsApi, balancesApi } from '../../services/api';
 import { formatCurrency, cn } from '../../utils';
 import { useAuth } from '../../context/AuthContext';
@@ -22,7 +23,6 @@ export default function Friends() {
   const [searchQuery, setSearchQuery] = useState('');
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [removeTarget, setRemoveTarget] = useState<Friend | null>(null);
-  const [removing, setRemoving] = useState(false);
   const [filter, setFilter] = useState<FilterMode>('all');
 
   const loadFriends = useCallback(async () => {
@@ -49,12 +49,12 @@ export default function Friends() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadFriends();
   }, [loadFriends]);
 
   async function handleDeleteFriend() {
     if (!removeTarget) return;
-    setRemoving(true);
     try {
       await friendsApi.delete(removeTarget.id);
       setFriends(prev => prev.filter(f => f.id !== removeTarget.id));
@@ -62,15 +62,16 @@ export default function Friends() {
       setRemoveTarget(null);
     } catch (err) {
       showError(err instanceof Error ? err.message : 'Failed to remove friend');
-    } finally {
-      setRemoving(false);
     }
   }
 
-  function handleFriendCreated(friend: Friend) {
-    setFriends(prev => [friend, ...prev]);
+  function handleFriendCreated() {
     setAddModalOpen(false);
-    showSuccess(`${friend.name} added`);
+    showSuccess('Friend request sent');
+  }
+
+  function handleRequestHandled() {
+    loadFriends();
   }
 
   const totalOwedToMe = Object.values(balances).filter(b => b > 0).reduce((a, b) => a + b, 0);
@@ -94,7 +95,6 @@ export default function Friends() {
     .sort((a, b) => {
       const ba = balances[a.id] || 0;
       const bb = balances[b.id] || 0;
-      // Active balances first (largest absolute value first), then settled
       const aActive = ba !== 0 ? 1 : 0;
       const bActive = bb !== 0 ? 1 : 0;
       if (aActive !== bActive) return bActive - aActive;
@@ -160,6 +160,9 @@ export default function Friends() {
           Add Friend
         </Button>
       </div>
+
+      {/* Friend Requests Section */}
+      <FriendRequestsSection onRequestHandled={handleRequestHandled} />
 
       {/* Summary row (only when friends exist) */}
       {friends.length > 0 && (

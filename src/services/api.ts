@@ -125,6 +125,11 @@ export const friendRequestsApi = {
   }),
 };
 
+// Search users API
+export const searchApi = {
+  byEmail: (email: string) => authedFetch<User>(`/api/search-users?email=${encodeURIComponent(email)}`),
+};
+
 // Expenses API
 export const expensesApi = {
   get: (groupId?: string, limit?: number) => {

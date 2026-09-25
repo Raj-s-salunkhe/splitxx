@@ -24,6 +24,7 @@ export interface FriendRequest {
   status: 'pending' | 'accepted' | 'rejected';
   created_at: string;
   updated_at: string;
+  profile?: User;
 }
 
 export interface Group {
